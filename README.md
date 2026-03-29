@@ -1,68 +1,109 @@
+# CodeTrainer
 
+> 基于 Spring Boot + MyBatis + MySQL 的编程训练系统，覆盖题库资源、试卷试题、考试记录、成绩统计、论坛互动等功能，并内置前后端资源（管理端 Vue 工程与前台静态页面）。
 
-编程训练系统（Programming Training System）
+## 1. 项目定位
 
-基于 Spring Boot + MySQL 构建的 B/S 架构编程训练平台，实现题库管理、考试管理、用户交流、统计分析等核心功能，旨在提升编程学习效率，规范训练流程。
+`CodeTrainer` 适用于课程训练、考试练习与题库管理场景，当前仓库包含：
 
-项目简介
+- 后端：`springbootx1786`（Spring Boot）
+- 管理端前端：`springbootx1786/src/main/resources/admin/admin`（Vue2）
+- 前台页面：`springbootx1786/src/main/resources/front/front`（静态页面）
+- 数据库脚本：`db.sql`
 
-本系统是一个面向编程学习者和管理员的编程训练系统，采用 Java 技术栈开发，支持在线题库浏览、考试练习、用户留言交流及后台管理等功能。系统通过信息化手段优化了编程训练的组织与管理，提高了训练效率与管理质量。
+## 2. 功能模块
 
-系统架构
-	•	架构模式：B/S（Browser/Server）架构
-	•	后端框架：Spring Boot 3.x
-	•	数据库：MySQL 8.x
-	•	持久层框架：MyBatis 3.x
-	•	构建工具：Maven 4.x
-	•	前端技术：JSP + HTML + CSS
+- 用户与权限：管理员、普通用户（`users`/`yonghu`）
+- 题库资源：`tikuziyuan` 与评论 `discusstikuziyuan`
+- 考试管理：试卷 `exampaper`、试题 `examquestion`、考试记录 `examrecord`
+- 学习统计：练题统计 `liantitongji`、得分统计 `defentongji`
+- 互动与内容：论坛 `forum`、留言 `messages`、新闻 `news`、收藏 `storeup`
+- 文件上传下载：`file` 接口
 
-系统功能
+## 3. 技术栈
 
-管理员端功能模块：
-	•	用户信息管理
-	•	题库资源管理
-	•	试题信息管理
-	•	试卷管理
-	•	考试管理
-	•	留言板管理
-	•	用户交流管理
-	•	系统权限与数据安全配置
+- 后端：Spring Boot 2.2.2、MyBatis-Plus、Shiro
+- 数据库：MySQL 5.7/8.x
+- 运行环境：JDK 8
+- 前端：Vue 2 + Element UI（管理端），静态 HTML/JS（前台）
 
-用户端功能模块：
-	•	查看题库资源
-	•	在线参加考试
-	•	留言互动与用户交流
-	•	查看个人成绩与练习记录
+## 4. 项目结构
 
-技术特点
-	•	高可用性与稳定性：使用成熟的 Java 后端技术栈，保障系统稳定运行。
-	•	良好的扩展性：模块划分清晰，便于后续功能扩展。
-	•	数据库设计合理：使用 E-R 模型规范数据库结构，确保数据完整性和一致性。
-	•	权限管理清晰：用户分级，确保系统数据安全。
-	•	界面简洁易用：基于 Web 交互风格，适配主流浏览器。
+```text
+CodeTrainer
+├── springbootx1786/
+│   ├── src/main/java/com/
+│   │   ├── controller/               # 各业务模块控制器
+│   │   ├── service/dao/entity/       # 服务、数据访问、实体
+│   │   └── SpringbootSchemaApplication.java
+│   ├── src/main/resources/
+│   │   ├── application.yml
+│   │   ├── mapper/*.xml
+│   │   ├── admin/admin/              # Vue 管理端源码 + dist
+│   │   └── front/front/              # 前台静态页面
+│   └── pom.xml
+└── db.sql                            # 数据库初始化脚本
+```
 
-数据库设计
+## 5. 本地运行
 
-系统包含十余张核心数据表，如用户表、管理员表、试卷表、试题表、考试记录表、练习统计表、题库资源表、留言板表等，支持全面的教学与管理流程。
+### 5.1 环境准备
 
-系统测试
-	•	功能测试：各项功能模块稳定运行，无重大缺陷
-	•	可用性测试：操作友好，界面清晰，支持常见浏览器
-	•	性能测试：局域网响应迅速，支持高并发访问场景
-	•	安全测试：权限隔离、数据备份、异常容错机制完善
+- JDK 8
+- Maven 3.6+
+- MySQL 5.7/8.x
+- Node.js（仅在你需要重建管理端前端时）
 
-安装与运行
-	1.	克隆项目：
+### 5.2 初始化数据库
 
-git clone https://github.com/your-username/your-repo-name.git
+1. 创建数据库：`springbootx1786`
+2. 导入 [db.sql](/Users/liuzhuoran/Documents/Playground/readme-batch/CodeTrainer/db.sql)
+3. 按本地环境修改 [application.yml](/Users/liuzhuoran/Documents/Playground/readme-batch/CodeTrainer/springbootx1786/src/main/resources/application.yml)
 
+### 5.3 启动后端
 
-	2.	导入数据库脚本（位于 sql/ 文件夹）
-	3.	配置数据库连接（application.yml）
-	4.	使用 IDE（如 IntelliJ IDEA）运行项目入口类 Application.java
-	5.	浏览器访问：
+```bash
+cd springbootx1786
+mvn spring-boot:run
+```
 
-http://localhost:8080/
+默认端口与上下文：`http://localhost:8080/springbootx1786`
 
+### 5.4 管理端前端（可选重建）
 
+```bash
+cd springbootx1786/src/main/resources/admin/admin
+npm install
+npm run serve
+# 或 npm run build
+```
 
+## 6. 示例账号（来自 db.sql）
+
+- 管理员：`abo / abo`
+- 普通用户示例：`用户1 / 123456`（其余同类账号见脚本）
+
+## 7. 常见问题
+
+- 启动后 404：确认访问路径带有上下文 `/springbootx1786`
+- 页面静态资源不显示：确认 `spring.resources.static-locations` 配置有效
+- 数据库连接失败：检查 MySQL 驱动、时区、账号密码
+
+## 8. 开发建议
+
+- 将数据库密码改为环境变量注入
+- 清理仓库中的演示上传文件，避免仓库体积增长
+- 增加最小化单元测试与接口测试
+
+## 12.1 贡献建议
+
+欢迎通过 Issue / PR 提交：
+
+- 模块文档与接口说明补全
+- 前端构建链升级（Vue2 依赖维护）
+- 鉴权与权限控制增强
+- 数据库迁移脚本规范化
+
+## 12.2 许可说明
+
+本仓库采用 MIT License，详见 [LICENSE](/Users/liuzhuoran/Documents/Playground/readme-batch/CodeTrainer/LICENSE)。
