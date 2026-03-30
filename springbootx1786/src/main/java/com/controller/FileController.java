@@ -13,6 +13,8 @@ import java.util.UUID;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -40,6 +42,8 @@ import com.utils.R;
 @RequestMapping("file")
 @SuppressWarnings({"unchecked","rawtypes"})
 public class FileController{
+	private static final Logger log = LoggerFactory.getLogger(FileController.class);
+
 	@Autowired
     private ConfigService configService;
 	/**
@@ -107,10 +111,10 @@ public class FileController{
 			    headers.setContentDispositionFormData("attachment", fileName);    
 			    return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file),headers, HttpStatus.CREATED);
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
+			} catch (IOException e) {
+				log.error("File download failed fileName={}", fileName, e);
+			}
+			return new ResponseEntity<byte[]>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		return new ResponseEntity<byte[]>(HttpStatus.INTERNAL_SERVER_ERROR);
-	}
 	
 }

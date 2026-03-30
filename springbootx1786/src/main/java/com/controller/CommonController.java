@@ -13,6 +13,8 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,6 +41,8 @@ import com.utils.R;
  */
 @RestController
 public class CommonController{
+	private static final Logger log = LoggerFactory.getLogger(CommonController.class);
+
 	@Autowired
 	private CommonService commonService;
 	
@@ -94,12 +98,13 @@ public class CommonController{
 			requests.add(req1);
 			requests.add(req2);
 			res = client.match(requests);
-			System.out.println(res.get("result"));
+			log.debug("Face match result={}", res.get("result"));
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			log.error("Face match file not found", e);
 			return R.error("文件不存在");
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error("Face match IO error", e);
+			return R.error("人脸比对失败");
 		} 
 		return R.ok().put("data", com.alibaba.fastjson.JSONObject.parse(res.get("result").toString()));
 	}
