@@ -25,6 +25,10 @@ spring:
     resources:
       static-locations: classpath:static/,file:static/
 
+common:
+    safe-sql:
+        allowed-tables: ${SAFE_SQL_ALLOWED_TABLES:config,defentongji,discusstikuziyuan,exampaper,examquestion,examrecord,forum,liantitongji,messages,news,storeup,tikuziyuan,token,users,yonghu}
+
 #mybatis
 mybatis-plus:
   mapper-locations: classpath*:mapper/*.xml

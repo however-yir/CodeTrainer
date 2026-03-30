@@ -5,21 +5,24 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import javax.annotation.PostConstruct;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,17 +50,32 @@ import com.utils.R;
 public class CommonController{
 	private static final Logger log = LoggerFactory.getLogger(CommonController.class);
 	private static final Pattern IDENTIFIER_PATTERN = Pattern.compile("^[A-Za-z_][A-Za-z0-9_]{0,63}$");
-	private static final Set<String> ALLOWED_TABLES = new HashSet<>(Arrays.asList(
-			"config", "defentongji", "discusstikuziyuan", "exampaper", "examquestion",
-			"examrecord", "forum", "liantitongji", "messages", "news", "storeup",
-			"tikuziyuan", "token", "users", "yonghu"
-	));
+
+	@Value("${common.safe-sql.allowed-tables:config,defentongji,discusstikuziyuan,exampaper,examquestion,examrecord,forum,liantitongji,messages,news,storeup,tikuziyuan,token,users,yonghu}")
+	private String allowedTablesConfig;
+	private final Set<String> allowedTables = new HashSet<String>();
 
 	@Autowired
 	private CommonService commonService;
 	
 	@Autowired
 	private ConfigService configService;
+
+	@PostConstruct
+	public void initAllowedTables() {
+		allowedTables.clear();
+		if (StringUtils.isBlank(allowedTablesConfig)) {
+			return;
+		}
+		String[] tableNames = allowedTablesConfig.split(",");
+		for (String tableName : tableNames) {
+			String normalized = tableName == null ? "" : tableName.trim().toLowerCase(Locale.ROOT);
+			if (!normalized.isEmpty() && isSafeIdentifier(normalized)) {
+				allowedTables.add(normalized);
+			}
+		}
+		log.info("Safe SQL allowed table count={}", allowedTables.size());
+	}
 	
 	private static AipFace client = null;
 	
@@ -293,7 +311,7 @@ public class CommonController{
 	}
 
 	private boolean isAllowedTable(String tableName) {
-		return isSafeIdentifier(tableName) && ALLOWED_TABLES.contains(tableName);
+		return isSafeIdentifier(tableName) && allowedTables.contains(tableName.toLowerCase(Locale.ROOT));
 	}
 
 	private boolean isSafeIdentifier(String identifier) {
