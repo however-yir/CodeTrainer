@@ -69,7 +69,34 @@ mvn spring-boot:run
 
 默认端口与上下文：`http://localhost:8080/springbootx1786`
 
-### 5.4 管理端前端（可选重建）
+### 5.4 动态 SQL 白名单配置（安全）
+
+为降低通用接口中的动态 SQL 注入风险，项目已将白名单改为配置化加载。
+
+- 代码位置：[CommonController.java](springbootx1786/src/main/java/com/controller/CommonController.java)
+- 实现方式：
+  - 从 `@Value("${common.safe-sql.allowed-tables:...}")` 读取表名单
+  - 在 `@PostConstruct` 中解析为 `Set`
+  - 保留标识符正则校验逻辑（仅允许安全表名/字段名）
+- 结果：后续新增允许的业务表时，不需要改代码，只需改配置
+
+配置入口：
+
+- 文件：[application.yml](springbootx1786/src/main/resources/application.yml)
+- 配置项：`common.safe-sql.allowed-tables`
+- 环境变量覆盖：`SAFE_SQL_ALLOWED_TABLES`
+
+变更提交：
+
+- commit: `262dba0`
+- branch: `main`
+
+使用方式：
+
+1. 直接在 `application.yml` 中修改逗号分隔白名单；
+2. 或在部署环境设置 `SAFE_SQL_ALLOWED_TABLES=config,defentongji,...,新表名`。
+
+### 5.5 管理端前端（可选重建）
 
 ```bash
 cd springbootx1786/src/main/resources/admin/admin
