@@ -5,11 +5,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
@@ -42,6 +46,12 @@ import com.utils.R;
 @RestController
 public class CommonController{
 	private static final Logger log = LoggerFactory.getLogger(CommonController.class);
+	private static final Pattern IDENTIFIER_PATTERN = Pattern.compile("^[A-Za-z_][A-Za-z0-9_]{0,63}$");
+	private static final Set<String> ALLOWED_TABLES = new HashSet<>(Arrays.asList(
+			"config", "defentongji", "discusstikuziyuan", "exampaper", "examquestion",
+			"examrecord", "forum", "liantitongji", "messages", "news", "storeup",
+			"tikuziyuan", "token", "users", "yonghu"
+	));
 
 	@Autowired
 	private CommonService commonService;
@@ -105,7 +115,10 @@ public class CommonController{
 		} catch (IOException e) {
 			log.error("Face match IO error", e);
 			return R.error("人脸比对失败");
-		} 
+		}
+		if (res == null || res.get("result") == null) {
+			return R.error("人脸比对结果为空");
+		}
 		return R.ok().put("data", com.alibaba.fastjson.JSONObject.parse(res.get("result").toString()));
 	}
     
@@ -118,6 +131,9 @@ public class CommonController{
 	@IgnoreAuth
 	@RequestMapping("/option/{tableName}/{columnName}")
 	public R getOption(@PathVariable("tableName") String tableName, @PathVariable("columnName") String columnName,String level,String parent) {
+		if (!isAllowedTable(tableName) || !isSafeIdentifier(columnName)) {
+			return R.error(400, "非法参数");
+		}
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("table", tableName);
 		params.put("column", columnName);
@@ -140,6 +156,9 @@ public class CommonController{
 	@IgnoreAuth
 	@RequestMapping("/follow/{tableName}/{columnName}")
 	public R getFollowByOption(@PathVariable("tableName") String tableName, @PathVariable("columnName") String columnName, @RequestParam String columnValue) {
+		if (!isAllowedTable(tableName) || !isSafeIdentifier(columnName)) {
+			return R.error(400, "非法参数");
+		}
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("table", tableName);
 		params.put("column", columnName);
@@ -156,6 +175,9 @@ public class CommonController{
 	 */
 	@RequestMapping("/sh/{tableName}")
 	public R sh(@PathVariable("tableName") String tableName, @RequestBody Map<String, Object> map) {
+		if (!isAllowedTable(tableName)) {
+			return R.error(400, "非法参数");
+		}
 		map.put("table", tableName);
 		commonService.sh(map);
 		return R.ok();
@@ -172,7 +194,10 @@ public class CommonController{
 	@IgnoreAuth
 	@RequestMapping("/remind/{tableName}/{columnName}/{type}")
 	public R remindCount(@PathVariable("tableName") String tableName, @PathVariable("columnName") String columnName, 
-						 @PathVariable("type") String type,@RequestParam Map<String, Object> map) {
+							 @PathVariable("type") String type,@RequestParam Map<String, Object> map) {
+		if (!isAllowedTable(tableName) || !isSafeIdentifier(columnName)) {
+			return R.error(400, "非法参数");
+		}
 		map.put("table", tableName);
 		map.put("column", columnName);
 		map.put("type", type);
@@ -208,6 +233,9 @@ public class CommonController{
 	@IgnoreAuth
 	@RequestMapping("/cal/{tableName}/{columnName}")
 	public R cal(@PathVariable("tableName") String tableName, @PathVariable("columnName") String columnName) {
+		if (!isAllowedTable(tableName) || !isSafeIdentifier(columnName)) {
+			return R.error(400, "非法参数");
+		}
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("table", tableName);
 		params.put("column", columnName);
@@ -221,6 +249,9 @@ public class CommonController{
 	@IgnoreAuth
 	@RequestMapping("/group/{tableName}/{columnName}")
 	public R group(@PathVariable("tableName") String tableName, @PathVariable("columnName") String columnName) {
+		if (!isAllowedTable(tableName) || !isSafeIdentifier(columnName)) {
+			return R.error(400, "非法参数");
+		}
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("table", tableName);
 		params.put("column", columnName);
@@ -242,6 +273,9 @@ public class CommonController{
 	@IgnoreAuth
 	@RequestMapping("/value/{tableName}/{xColumnName}/{yColumnName}")
 	public R value(@PathVariable("tableName") String tableName, @PathVariable("yColumnName") String yColumnName, @PathVariable("xColumnName") String xColumnName) {
+		if (!isAllowedTable(tableName) || !isSafeIdentifier(xColumnName) || !isSafeIdentifier(yColumnName)) {
+			return R.error(400, "非法参数");
+		}
 		Map<String, Object> params = new HashMap<String, Object>();
 		params.put("table", tableName);
 		params.put("xColumn", xColumnName);
@@ -256,6 +290,14 @@ public class CommonController{
 			}
 		}
 		return R.ok().put("data", result);
+	}
+
+	private boolean isAllowedTable(String tableName) {
+		return isSafeIdentifier(tableName) && ALLOWED_TABLES.contains(tableName);
+	}
+
+	private boolean isSafeIdentifier(String identifier) {
+		return identifier != null && IDENTIFIER_PATTERN.matcher(identifier).matches();
 	}
 	
 }
