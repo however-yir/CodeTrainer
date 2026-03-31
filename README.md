@@ -1,5 +1,9 @@
 # CodeTrainer
 
+🔥 A coding training system based on Spring Boot, MyBatis-Plus, MySQL, and Vue admin resources.  
+🚀 Built for question banks, exams, score statistics, discussion modules, and training workflows.  
+⭐ Supports admin management, learner records, paper generation, and practice-oriented education scenarios.
+
 > 基于 Spring Boot + MyBatis + MySQL 的编程训练系统，覆盖题库资源、试卷试题、考试记录、成绩统计、论坛互动等功能，并内置前后端资源（管理端 Vue 工程与前台静态页面）。
 
 ## 1. 项目定位
