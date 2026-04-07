@@ -61,8 +61,8 @@ CodeTrainer
 ### 5.2 初始化数据库
 
 1. 创建数据库：`springbootx1786`
-2. 导入 [db.sql](/Users/liuzhuoran/Documents/Playground/readme-batch/CodeTrainer/db.sql)
-3. 按本地环境修改 [application.yml](/Users/liuzhuoran/Documents/Playground/readme-batch/CodeTrainer/springbootx1786/src/main/resources/application.yml)
+2. 导入 [db.sql](db.sql)
+3. 按本地环境修改 [application.yml](springbootx1786/src/main/resources/application.yml)
 
 ### 5.3 启动后端
 
@@ -137,4 +137,4 @@ npm run serve
 
 ## 12.2 许可说明
 
-本仓库采用 MIT License，详见 [LICENSE](/Users/liuzhuoran/Documents/Playground/readme-batch/CodeTrainer/LICENSE)。
+本仓库采用 MIT License，详见 [LICENSE](LICENSE)。
