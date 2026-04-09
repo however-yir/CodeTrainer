@@ -104,10 +104,16 @@ mvn spring-boot:run
 
 ```bash
 cd springbootx1786/src/main/resources/admin/admin
-npm install
+npm ci
 npm run serve
-# 或 npm run build
+# 生产构建
+npm run build
 ```
+
+构建说明：
+
+- `npm run build` 产物位于 `springbootx1786/src/main/resources/admin/admin/dist`
+- 若仅做后端联调，可跳过前端重建，直接使用仓库内静态资源
 
 ## 6. 示例账号（来自 db.sql）
 
