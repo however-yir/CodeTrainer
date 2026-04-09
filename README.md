@@ -1,4 +1,4 @@
-# CodeTrainer
+# CodeTrainer - 编程训练与考试平台 | Coding Training & Exam Platform
 
 🔥 A coding training system based on Spring Boot, MyBatis-Plus, MySQL, and Vue admin resources.  
 🚀 Built for question banks, exams, score statistics, discussion modules, and training workflows.  
