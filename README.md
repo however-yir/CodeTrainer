@@ -144,3 +144,16 @@ npm run build
 ## 12.2 许可说明
 
 本仓库采用 MIT License，详见 [LICENSE](LICENSE)。
+## Engineering Quality
+
+This repository includes a contract-based quality baseline to keep essential engineering standards stable over time.
+
+- Quality plan: [docs/ENGINEERING_QUALITY.md](docs/ENGINEERING_QUALITY.md)
+- Contract tests: [tests/repo_contract_test.sh](tests/repo_contract_test.sh)
+- Contract CI workflow: [.github/workflows/repo-contract-ci.yml](.github/workflows/repo-contract-ci.yml)
+
+Run local contract checks:
+
+```bash
+bash tests/repo_contract_test.sh
+```
